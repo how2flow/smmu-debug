@@ -1,0 +1,33 @@
+// SPDX-License-Identifier: (GPL-2.0-or-later OR MIT)
+/*
+ * Copyright (C) Steve Jeong <steve@how2flow.net>
+ *
+ * SMMUv3 PCIe runtime test enablement.
+ *
+ * Generic fragment for SoCs that ship an SMMUv3 instance behind one
+ * or more PCIe Root Complexes. Edit the &label references and the
+ * SID-base / length values to match the target SoC's DT.
+ *
+ *  - flips &smmu to "okay" (assuming the SoC ships it disabled by
+ *    default; remove this override if your SoC ships it enabled).
+ *  - wires &pcie0 / &pcie1 RID space into &smmu stream IDs.
+ *
+ * Pairs with drivers/misc/smmu-debug/smmu-test/smmu-test-pcie.c.
+ * Include this fragment last in the board DTS so its &label
+ * overrides win against any earlier defaults.
+ */
+
+&smmu {
+	status = "okay";
+};
+
+&pcie0 {
+	/* <rid-base, &iommu, sid-base, length>. Adjust sid-base to a
+	 * range your SMMU has reserved for PCIe RC0.
+	 */
+	iommu-map = <0x0 &smmu 0x0 0x10000>;
+};
+
+&pcie1 {
+	iommu-map = <0x0 &smmu 0x10000 0x10000>;
+};

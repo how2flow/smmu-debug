@@ -1,0 +1,3 @@
+# Append to drivers/misc/Makefile
+
+obj-$(CONFIG_ARM_SMMU_V3)	+= smmu-debug/
